@@ -36,7 +36,7 @@ class Column(models.Model):
         ('Date', 'Date'),
     ]
 
-    name = models.CharField('Column name', unique=True, max_length=100)
+    name = models.CharField('Column name', unique=True, max_length=100, null=False)
     data_type = models.CharField(max_length=20, choices=DATA_TYPE_CHOICES, blank=False, null=False)
     extra_args = models.CharField(max_length=100, blank=True)
     order = models.IntegerField(blank=True, null=True)

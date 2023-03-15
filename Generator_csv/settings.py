@@ -78,11 +78,16 @@ WSGI_APPLICATION = 'Generator_csv.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': 'd3ikgkfd07iams',
+        'HOST': 'ec2-52-50-161-219.eu-west-1.compute.amazonaws.com',
+        'PORT': 5432,
+        'USER':'cwbttwniiosogx',
+        'PASSWORD':'fb9a114a3867a53430e39fdbabd620e27c4940a95bb44f408c4f47c73699cda4'
     }
 }
-
+# postgres://cwbttwniiosogx:fb9a114a3867a53430e39fdbabd620e27c4940a95bb44f408c4f47c73699cda4@ec2-52-50-161-219.eu-west-1.compute.amazonaws.com:5432/d3ikgkfd07iams
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -117,8 +122,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = (os.path.join(BASE_DIR,'static'),)
-
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -133,7 +137,6 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = "/"
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
 
 AWS_ACCESS_KEY_ID = 'AKIAQYWNIDGGDDOU5YUL'
 
