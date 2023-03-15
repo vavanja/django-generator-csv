@@ -1,0 +1,30 @@
+body {
+    background: #F2F2F2;
+}
+
+nav {
+    background: #F7F7F9;
+}
+
+a {
+    text-decoration: none;
+}
+
+table {
+    counter-reset: tableCount;
+}
+
+.counterCell:before {
+    content: counter(tableCount);
+    counter-increment: tableCount;
+}
+
+.blink {
+  animation: blinker 1.5s step-start infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}

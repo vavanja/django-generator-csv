@@ -1,0 +1,44 @@
+<form method="post" hx-post="." hx-swap="outerHTML">
+
+    {% csrf_token %}
+
+    {% if message %}
+        <h4 class="text-center">{{ message }}</h4>
+    {% endif %}
+
+    {% for field in form %}
+        <div class="{% if field.field.required %}{{ form.required_css_class }} {% endif %}">
+        <span>{{ field.errors }}</span>
+
+            {{ field.label_tag }}{{ field }}
+            {% if field.help_text %}
+                <p>{{ field.help_text|safe }}</p>
+            {% endif %}
+
+        </div>
+    {% endfor %}
+
+    {% if formset %}
+        <h3 class="m-3">Schema columns</h3>
+        {{ formset.management_form }}
+        <div id="column-form-list">
+            {% for form in formset %}
+
+
+                <div class="column-form" id="test-delete">
+
+                    {{ form }}
+                    {{ form.DELETE }}
+                    <a href="{% url 'delete_column' object.id form.name.value %}" style="color: red">X</a>
+
+                </div>
+
+            {% endfor %}
+        </div>
+
+        <div id="empty-form" class="hidden">{{ formset.empty_form }}</div>
+        <button class="button btn-primary" id="add-more" type="button">Add column</button>
+
+    {% endif %}
+    <button type="submit" class="btn btn-primary mt-1">Save</button>
+</form>

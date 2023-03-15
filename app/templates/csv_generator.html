@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+
+        <div class="d-inline-block m-3">
+            <h4>{{ object.name }} schema</h4>
+        </div>
+
+        <div class="d-inline-block">
+            <h5><a href="{% url 'update_schema' object.id %}">Edit schema</a></h5>
+        </div>
+
+        <table class="table table-bordered border-primary table-sm mt-2" style="width: 650px; height: 50px;">
+            <thead class="table-primary">
+            <tr>
+                <th scope="col" class="text-center">#</th>
+                <th scope="col" class="text-center">Column name</th>
+                <th scope="col" class="text-center">Column type</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for col in queryset %}
+                <tr class="table-light">
+                    <td class="counterCell text-center"></td>
+                    <td class="text-center">{{ col.name }}</td>
+                    <td class="text-center">{{ col.data_type }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+
+        <div class="d-inline-block m-3">
+            <h4>Data sets</h4>
+        </div>
+        <div class="d-inline-block m-3">
+
+            <form action="" method="post" id="generate-csv-form">
+                {% csrf_token %}
+                <span for="num-rows">Rows</span>
+                <input type="number" id="num-rows" name="num_rows" required placeholder="Rows">
+                <button type="submit" class="btn btn-success" id="generate-csv-button">Generate data</button>
+            </form>
+        </div>
+
+        <table class="table table-bordered border-primary table-sm mt-2" id="my_table"
+               style="width: 825px; height: 50px;">
+            <thead class="table-primary">
+            <tr>
+                <th scope="col" class="text-center">#</th>
+                <th scope="col" class="text-center">Status</th>
+                <th scope="col" class="text-center">Created</th>
+
+                <th scope="col" class="text-center">Action</th>
+            </tr>
+            </thead>
+            <tbody id="download-link-table text-center">
+                {% for dataset in datasets %}
+                <tr class="text-center">
+                    <td class="counterCell"></td>
+                    <td class="badge bg-success">{{dataset.status}}</td>
+                    <td>{{dataset.date_created}}</td>
+                    <td><a href="{{dataset.download_link}}">Download</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <script>
+
+
+        $(document).ready(function () {
+
+
+            $('#generate-csv-form').submit(function (event) {
+                event.preventDefault();
+                setTimeout("jQuery('#generate-csv-button').hide();", 1);
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "csv_generator" pk=object.id %}',
+                    data: $(this).serialize(),
+                    beforeSend: function () {
+                        var row = $('<tr class="text-center"></tr>');
+                        var row_num = $('<td>').addClass('counterCell');
+                        var status = $('<td class="blink badge bg-secondary" id="status_id" ></td>').text('Processing...');
+                        var empty_cell = $('<td ></td>').text("");
+                        var d = new Date();
+                        var datestring = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+                        var date = $('<td class="" ></td>').text(datestring);
+                        $('table[id^=my_table]').append(row.append(row_num, status, date, empty_cell));
+
+                    },
+                    success: function (data) {
+                        jQuery('#generate-csv-button').show();
+                        $('table tr').last().remove('tr');
+
+
+                        var row = $('<tr class="text-center "></tr>');
+
+                        var row_num = $('<td>').addClass('counterCell');
+                        var status = $('<td class="badge bg-success" id="status_id"></td>').text(data.status);
+                        var date = $('<td></td>').text(data.date);
+                        var download_link = $('<a>').attr('href', data.download_link).text('Download');
+
+                        $('table[id^=my_table]').append(row.append(row_num, status, date, download_link));
+
+
+                    },
+                    timeout: 5000,
+                });
+            });
+        });
+    </script>
+{% endblock %}
